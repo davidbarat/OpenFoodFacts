@@ -4,7 +4,7 @@ import mysql.connector
 class database():
 
     def __init__(self):
-        print('init')
+        print('init 2')
 
     def create(self):
 
