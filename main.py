@@ -48,7 +48,10 @@ for i in range(5):
 
 
 my_database = database()
-my_database.create()
+if my_database.init_database('openfoodfacts'):
+    my_database.create_database('openfoodfacts')
+
+my_database.populate_database('openfoodfacts')
 
 # answer = input('Entrez votre nombre: ')
 # print(answer)
