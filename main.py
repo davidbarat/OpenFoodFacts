@@ -50,8 +50,8 @@ for i in range(5):
 my_database = database()
 if my_database.init_database('openfoodfacts'):
     my_database.create_database('openfoodfacts')
+    my_database.populate_database('openfoodfacts')
 
-my_database.populate_database('openfoodfacts')
-
-# answer = input('Entrez votre nombre: ')
+answer = input('Selectionnez votre categories : ')
+my_database.select('openfoodfacts', 'categories')
 # print(answer)

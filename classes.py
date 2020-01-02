@@ -64,7 +64,9 @@ class database():
 
         self.mycursor = self.mydb.cursor()
         for columns in self.list_categories:
-            self.mycursor.execute(" INSERT INTO categories(category_name) values (" + columns + ");" )
+            self.sql_insert = """INSERT INTO categories(category_name) values (%s);"""
+            self.value = (columns)
+            self.mycursor.execute(self.sql_insert, (self.value,))
         self.mydb.commit()
 
     def insert(self, dbname, table):
@@ -79,3 +81,20 @@ class database():
         self.mycursor = self.mydb.cursor()
         self.mycursor.execute(sql_request + ';')
         self.mydb.commit()
+
+    def select(self, dbname, table):
+        print('select')
+        self.mydb = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                passwd="karen250",
+                database=dbname
+                )
+
+        self.mycursor = self.mydb.cursor()
+        self.sql_select = "SELECT * FROM %s" % table
+        self.mycursor.execute(self.sql_select)
+        # self.mycursor.execute("SELECT * FROM %s", (self.value, ))
+        self.result = self.mycursor.fetchall()
+        for row in self.result :
+            print(row)
