@@ -2,7 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 import sys
 import io
-
+import re
 
 class database():
 
@@ -10,7 +10,7 @@ class database():
         self.mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
-                passwd="karen250"
+                passwd="karen250",
                 )
         self.list_categories = [
             'Snacks',
@@ -83,18 +83,36 @@ class database():
         self.mydb.commit()
 
     def select(self, dbname, table):
-        print('select')
+
+        self.list_row = []
         self.mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
                 passwd="karen250",
                 database=dbname
                 )
-
         self.mycursor = self.mydb.cursor()
         self.sql_select = "SELECT * FROM %s" % table
         self.mycursor.execute(self.sql_select)
         # self.mycursor.execute("SELECT * FROM %s", (self.value, ))
         self.result = self.mycursor.fetchall()
         for row in self.result :
-            print(row)
+            self.list_row.append(row[1]) #  display data without index
+        return(self.list_row)
+
+class menu():
+
+    def create_menu(self, list_menu):
+        # print('create_menu')
+        self.idx = 1
+        for item in list_menu:
+            print('{}'.format(self.idx) + ') ' + '{}'.format(item))
+            self.idx += 1
+    
+    def check_answer(self, answer):
+        regex = re.compile(r"[0-9]")
+        if regex.match(answer):
+            return True
+        return False
+
+

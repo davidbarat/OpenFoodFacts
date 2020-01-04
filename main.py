@@ -2,6 +2,7 @@ import requests
 import mysql.connector
 import random
 from classes import database
+from classes import menu
 
 # api-endpoint 
 url = "https://fr.openfoodfacts.org/cgi/search.pl"
@@ -52,6 +53,14 @@ if my_database.init_database('openfoodfacts'):
     my_database.create_database('openfoodfacts')
     my_database.populate_database('openfoodfacts')
 
-answer = input('Selectionnez votre categories : ')
-my_database.select('openfoodfacts', 'categories')
+
+list_categories = my_database.select('openfoodfacts', 'categories')
+menu_categories = menu()
+print('Selectionnez votre categorie : ')
+menu_categories.create_menu(list_categories)
+answer = input()
+while not menu_categories.check_answer(answer):
+    print('Selectionnez votre categorie : ')
+    menu_categories.create_menu(list_categories)
+    answer = input()
 # print(answer)
