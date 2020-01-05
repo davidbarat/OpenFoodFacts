@@ -1,8 +1,56 @@
 import mysql.connector
 from mysql.connector import Error
+import requests
+import random
 import sys
 import io
 import re
+
+class api():
+
+    def __init__(self):
+        # api-endpoint 
+        self.list_product = []
+        self.url = "https://fr.openfoodfacts.org/cgi/search.pl"
+
+    def get_info_from_api(self):
+
+        self.payload = {
+        "tag_0": "snack",
+            "tag_contains_0": "contains",
+            "tagtype_0": "categories",
+            "sort_by": "unique_scans_n",
+            "page": 1,
+            "page_size": 5,
+            "action": "process",
+            "json": 1
+        }
+
+        for i in range(5):
+            self.r = requests.get(
+                url = self.url,
+                params = self.payload,
+                headers = {'UserAgent': 'Project OpenFood - MacOS - Version 10.13.6'}
+                )
+            self.data = self.r.json()
+
+            for j in range(1, 5, 1):
+                if not 'nutriscore_grade' in self.data['products'][j]:
+                    self.data['products'][j]['nutriscore_grade'] = 'na'
+                self.list_product.append(
+                    (self.data['products'][j]['code'],
+                    j,
+                    self.data['products'][j]['product_name'],
+                    self.data['products'][j]['url'],
+                    self.data['products'][j]['stores_tags'],
+                    self.data['products'][j]['ingredients_text_fr'],
+                    self.data['products'][j]['nutriscore_grade']
+                    )
+                )
+                print(self.list_product)
+            self.payload['page'] = i
+
+        return(self.list_product)
 
 class database():
 
@@ -53,7 +101,7 @@ class database():
                 self.mycursor.execute(sql_request + ';')
         self.mydb.commit()
 
-    def populate_database(self, dbname):
+    def populate_database(self, dbname, list_product):
         print('populate')
         self.mydb = mysql.connector.connect(
                 host="localhost",
@@ -66,8 +114,25 @@ class database():
         for columns in self.list_categories:
             self.sql_insert = """INSERT INTO categories(category_name) values (%s);"""
             self.value = (columns)
-            self.mycursor.execute(self.sql_insert, (self.value,))
+            # self.mycursor.execute(self.sql_insert, (self.value,))
+        # self.mydb.commit()
+
+        for sql in list_product:
+            self.sql_insert ="""INSERT INTO products (
+                barcode,
+                id_category,
+                food,
+                url_food,
+                store,
+                description_food,
+                nutriscore) values (%s, %s, %s, %s, %s, %s, %s);"""
+            self.value = (sql)
+            print(self.value)
+            self.mycursor.executemany(self.sql_insert, self.value)
         self.mydb.commit()
+
+
+
 
     def insert(self, dbname, table):
         print('insert')
@@ -113,6 +178,7 @@ class menu():
         regex = re.compile(r"[0-9]")
         if regex.match(answer):
             return True
+        print('Vous devez taper un chiffre pour désigner une catégorie')
         return False
 
 
