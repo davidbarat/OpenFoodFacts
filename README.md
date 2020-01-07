@@ -1,7 +1,7 @@
 OpenFoodFacts
 -----------------
 
-## database openfoodfacts:
+## database openfoodfacts: ***
 * table produits_recupérés (refcode, aliment, catégorie, description, magasin, lien, nutriscore)
 * table produits_selectionnés (choix aliments, substitus sélectionnés)
 * table categorie (id, nom categories)
@@ -26,8 +26,8 @@ FK refcode et PK id categories
 
 ## create menu
 1. choisir une catégorie
-	1.1 choisir un produit parmi quelques produits malsains dans cette catégorie 
-	1.2 choisir un substitut parmi le ou les substituts proposés
+	1. choisir un produit parmi quelques produits malsains dans cette catégorie 
+	2. choisir un substitut parmi le ou les substituts proposés
 2. choisir d'enregistrer ou pas le substitut en favoris
 3. lister les choix enregistrés
 
@@ -47,13 +47,11 @@ Fork the project on your local machine and launch the game with the command belo
     python main.py
 
 
-tags json
-code
-url
-product_name
-ingredient_text
-stores
-categories
-nutrition_grade_fr
-additives_n
-
+** tags json **
+* code
+* url
+* product_name
+* ingredient_text
+* stores
+* categories
+* nutrition_grade_fr
