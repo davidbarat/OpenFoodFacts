@@ -1,7 +1,7 @@
 OpenFoodFacts
 -----------------
 
-## database openfoodfacts: ***
+## database openfoodfacts:
 * table produits_recupérés (refcode, aliment, catégorie, description, magasin, lien, nutriscore)
 * table produits_selectionnés (choix aliments, substitus sélectionnés)
 * table categorie (id, nom categories)
@@ -23,13 +23,19 @@ FK refcode et PK id categories
 * def recup_info
 	* payload pour appel API
 
+## class menu
+* check_answer
+	* check si la réponse est bien un chiffre
+* create_menu
+	* création d'un menu avec en paramètre une liste
 
-## create menu
-1. choisir une catégorie
-	1. choisir un produit parmi quelques produits malsains dans cette catégorie 
-	2. choisir un substitut parmi le ou les substituts proposés
-2. choisir d'enregistrer ou pas le substitut en favoris
-3. lister les choix enregistrés
+
+## menu à créer
+1. choisir une catégorie (select * from categories)
+	1. choisir un produit parmi quelques produits malsains dans cette catégorie (select * from products top 10) 
+	2. choisir un substitut parmi le ou les substituts proposés (select * from productions where nutriscore = a)
+2. choisir d'enregistrer ou pas le substitut en favoris (insert ou pas)
+3. lister les choix enregistrés (select * from products_selected)
 
 # OpenFoodFacts project
 
@@ -37,17 +43,17 @@ TODO
 
 ##  Instructions
 
-TODO 
+TODO
 
 ## Installing
 
-Fork the project on your local machine and launch the game with the command below :
+Fork the project on your local machine and launch the script via these commands:
 
     pip install -r requirements.txt
     python main.py
 
 
-** tags json **
+**tags json**
 * code
 * url
 * product_name
