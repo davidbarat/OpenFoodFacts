@@ -1,18 +1,27 @@
-# OpenFoodFacts
+OpenFoodFacts
+-----------------
 
-
-database openfoodfacts
-une table produits_recupérés (id, aliment, catégorie, description, magasin, lien)
-          produits_selectionnés (choix aliments, substitus sélectionnés)
+database openfoodfacts:
+    * table produits_recupérés (refcode, aliment, catégorie, description, magasin, lien, nutriscore)
+    * table produits_selectionnés (choix aliments, substitus sélectionnés)
+	* table categorie (id, nom categories)
 
 clé etrangère aliment
 
+## class database
+	* def init
+		creation de l'enveloppe
+	* def create
+		create de la structure, .sql à jouer
+	* def populate_database
+        insert des données dans les tables categories et products
+		récupération list_sql (list_product) et passage de l'instruction insert
+	* def select
+		select simple avec nom table en paramètre
 
-class database
-	def create
-	def select
-	def insert
-	def truncate
+## class api
+    * def recup_info
+		payload pour appel API
 
 
 create menu

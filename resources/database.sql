@@ -3,10 +3,9 @@ CREATE TABLE categories
 (
     id_category INT
     AUTO_INCREMENT NOT NULL PRIMARY KEY,
-                category_name VARCHAR
+    category_name VARCHAR
     (40) NOT NULL
 );
-
 
     CREATE TABLE products
     (
