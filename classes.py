@@ -47,9 +47,8 @@ class api():
                     self.data['products'][j]['nutriscore_grade']
                     )
                 )
-                print(self.list_product)
-            self.payload['page'] = i
-
+                # print(self.list_product)
+                self.payload['page'] = i
         return(self.list_product)
 
 class database():
@@ -116,8 +115,11 @@ class database():
             self.value = (columns)
             # self.mycursor.execute(self.sql_insert, (self.value,))
         # self.mydb.commit()
-
-        for sql in list_product:
+        
+        self.clean_list_product = self.clean_sql(list_product)
+        print('---')
+        print(self.clean_list_product)
+        for sql in self.clean_list_product:
             self.sql_insert ="""INSERT INTO products (
                 barcode,
                 id_category,
@@ -127,12 +129,37 @@ class database():
                 description_food,
                 nutriscore) values (%s, %s, %s, %s, %s, %s, %s);"""
             self.value = (sql)
-            print(self.value)
+            # print(self.value)
             self.mycursor.executemany(self.sql_insert, self.value)
         self.mydb.commit()
 
+    def clean_sql(self, list_product):
+        print('clean_sql')
+        # list_product[5] = [w.replace("'"," ") for w in list_product[5]]
+        # print(list_product)
+        self.clean_desc = []
+        self.new_desc = []
+        self.list_david = []
+        for i in list_product:
+            # print(i)
+            self.clean_desc = i[5].replace('"',"'")
+            self.clean_desc = i[5].replace("\'"," ")
+            self.new_desc.append(self.clean_desc)
+            i = [i[0], i[1], i[2], i[3], i[4], self.clean_desc, i[6]]
+            self.list_david.append(i)
+            # self.clean_desc = f'"{a}"'
+            # list_product.append(self.clean_desc)
+            # print(self.clean_desc)
+            # print(list_product)
+        # print('---')
+        # print(self.new_desc)
+        # print('---')
+        # for idx, i in enumerate(list_product):
+            # i[5] = self.new_desc[idx]
+        print('--------------------------------')
+        print(self.list_david)
 
-
+        return(list_product)
 
     def insert(self, dbname, table):
         print('insert')
@@ -180,5 +207,3 @@ class menu():
             return True
         print('Vous devez taper un chiffre pour désigner une catégorie')
         return False
-
-
