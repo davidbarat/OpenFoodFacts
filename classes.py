@@ -13,33 +13,39 @@ class api():
         self.list_product = []
         self.url = "https://fr.openfoodfacts.org/cgi/search.pl"
 
-    def get_info_from_api(self):
+    def get_info_from_api(self, list_categories):
 
         self.payload = {
-        "tag_0": "snack",
+        "tag_0": "categories",
             "tag_contains_0": "contains",
             "tagtype_0": "categories",
             "sort_by": "unique_scans_n",
             "page": 1,
-            "page_size": 5,
+            "page_size": 20,
             "action": "process",
             "json": 1
         }
 
-        for i in range(5):
+        for idx, i in enumerate(list_categories,1):
+            self.payload['tag_0'] = i
             self.r = requests.get(
                 url = self.url,
                 params = self.payload,
                 headers = {'UserAgent': 'Project OpenFood - MacOS - Version 10.13.6'}
                 )
             self.data = self.r.json()
+            # print(self.data)
 
-            for j in range(1, 5, 1):
+            for j in range(1, 19, 1):
                 if not 'nutriscore_grade' in self.data['products'][j]:
                     self.data['products'][j]['nutriscore_grade'] = 'na'
+                if not 'ingredients_text_fr' in self.data['products'][j]:
+                    self.data['products'][j]['ingredients_text_fr'] = 'na'
+                if not 'stores_tags' in self.data['products'][j]:
+                    self.data['products'][j]['stores_tags'] = 'na'
                 self.list_product.append(
                     (self.data['products'][j]['code'],
-                    j,
+                    idx,
                     self.data['products'][j]['product_name'],
                     self.data['products'][j]['url'],
                     self.data['products'][j]['stores_tags'],
@@ -47,8 +53,8 @@ class api():
                     self.data['products'][j]['nutriscore_grade']
                     )
                 )
-                # print(self.list_product)
-                self.payload['page'] = i
+                print(self.list_product)
+                self.payload['page'] = idx
         return(self.list_product)
 
 class database():
@@ -59,12 +65,6 @@ class database():
                 user="root",
                 passwd="karen250",
                 )
-        self.list_categories = [
-            'Snacks',
-            'Boissons',
-            'Produits Laitiers',
-            'Produits à tartiner',
-            'Fromages']
 
     def init_database(self, dbname):
         self.mycursor = self.mydb.cursor()
@@ -100,7 +100,7 @@ class database():
                 self.mycursor.execute(sql_request + ';')
         self.mydb.commit()
 
-    def populate_database(self, dbname, list_product):
+    def populate_database(self, dbname, list_product, list_categories):
         print('populate')
         self.mydb = mysql.connector.connect(
                 host="localhost",
@@ -110,7 +110,7 @@ class database():
                 )
 
         self.mycursor = self.mydb.cursor()
-        for columns in self.list_categories:
+        for columns in list_categories:
             self.sql_insert = """INSERT INTO categories(category_name) values (%s);"""
             self.value = (columns)
             # self.mycursor.execute(self.sql_insert, (self.value,))

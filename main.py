@@ -2,15 +2,21 @@ from classes import database
 from classes import menu
 from classes import api
 
+list_categories = [
+            'Snacks',
+            'Boissons',
+            'Produits Laitiers',
+            'Produits à tartiner',
+            'Fromages']
+
 my_api = api()
-list_product = my_api.get_info_from_api()
-# print(list_product)
+list_product = my_api.get_info_from_api(list_categories)
+print(list_product)
 
 my_database = database()
 if my_database.init_database('openfoodfacts'):
     my_database.create_database('openfoodfacts')
-my_database.populate_database('openfoodfacts', list_product)
-
+my_database.populate_database('openfoodfacts', list_product, list_categories)
 
 list_categories = my_database.select('openfoodfacts', 'categories')
 menu_categories = menu()
