@@ -4,7 +4,7 @@ from classes import api
 
 my_api = api()
 list_product = my_api.get_info_from_api()
-print(list_product)
+# print(list_product)
 
 my_database = database()
 if my_database.init_database('openfoodfacts'):
