@@ -127,7 +127,8 @@ class database():
             url_food,
             store,
             description_food,
-            nutriscore) values (%s, %s, %s, %s, %s, %s, %s);"""
+            nutriscore) values (%s, %s, %s, %s, %s, %s, %s) 
+            ON DUPLICATE KEY UPDATE barcode = VALUES (barcode);"""
         # self.value = (sql)
         # print(self.value)
         print(self.clean_list_product)

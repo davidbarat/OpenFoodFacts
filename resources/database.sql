@@ -11,7 +11,7 @@ CREATE TABLE categories
     (
         barcode VARCHAR(20) NOT NULL PRIMARY KEY,
         id_category INT NOT NULL,
-        food VARCHAR(25) NOT NULL,
+        food VARCHAR(40) NOT NULL,
         url_food VARCHAR(300) NOT NULL,
         store VARCHAR(100) NOT NULL,
         description_food VARCHAR(600) NOT NULL,
