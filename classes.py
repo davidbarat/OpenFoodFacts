@@ -5,6 +5,7 @@ import random
 import sys
 import io
 import re
+import time
 
 class api():
 
@@ -13,7 +14,7 @@ class api():
         self.list_product = []
         self.url = "https://fr.openfoodfacts.org/cgi/search.pl"
 
-    def get_info_from_api(self, list_categories):
+    def get_info_from_api(self, categories, index):
 
         self.payload = {
         "tag_0": "categories",
@@ -25,18 +26,26 @@ class api():
             "action": "process",
             "json": 1
         }
-
-        for idx, i in enumerate(list_categories,1):
-            self.payload['tag_0'] = i
-            self.r = requests.get(
-                url = self.url,
-                params = self.payload,
-                headers = {'UserAgent': 'Project OpenFood - MacOS - Version 10.13.6'}
+        self.list_product = []
+        # self.counter = 1
+        for c in range(1,6,1): # 5 pages
+            self.payload['page'] = c
+            self.payload['tag_0'] = categories
+            for j in range(1, 19, 1): #  20 resultats par pages
+                # self.payload['tag_0'] = i
+                # print('-----------')
+                # print(j)
+                # time.sleep(1)
+                # self.payload['page'] = self.counter #  nombre de pages
+                self.r = requests.get(
+                    url = self.url,
+                    params = self.payload,
+                    headers = {'UserAgent': 'Project OpenFood - MacOS - Version 10.13.6'}
                 )
-            self.data = self.r.json()
-            # print(self.data)
+                self.data = self.r.json()
+                # print(self.data)
+                # time.sleep(1)
 
-            for j in range(1, 19, 1):
                 if not 'nutriscore_grade' in self.data['products'][j]:
                     self.data['products'][j]['nutriscore_grade'] = 'na'
                 if not 'ingredients_text_fr' in self.data['products'][j]:
@@ -45,16 +54,16 @@ class api():
                     self.data['products'][j]['stores_tags'] = 'na'
                 self.list_product.append(
                     (self.data['products'][j]['code'],
-                    idx,
+                    index,
                     self.data['products'][j]['product_name'],
                     self.data['products'][j]['url'],
                     self.data['products'][j]['stores_tags'],
                     self.data['products'][j]['ingredients_text_fr'],
                     self.data['products'][j]['nutriscore_grade']
                     )
+                # self.counter += 1
                 )
-                print(self.list_product)
-                self.payload['page'] = idx
+                # print(self.list_product)
         return(self.list_product)
 
 class database():
@@ -131,7 +140,7 @@ class database():
             ON DUPLICATE KEY UPDATE barcode = VALUES (barcode);"""
         # self.value = (sql)
         # print(self.value)
-        print(self.clean_list_product)
+        # print(self.clean_list_product)
         self.mycursor.executemany(self.sql_insert, self.clean_list_product)
         self.mydb.commit()
 
@@ -167,7 +176,6 @@ class database():
         self.mydb.commit()
 
     def select(self, dbname, table):
-
         self.list_row = []
         self.mydb = mysql.connector.connect(
                 host="localhost",
@@ -182,6 +190,23 @@ class database():
         self.result = self.mycursor.fetchall()
         for row in self.result :
             self.list_row.append(row[1]) #  display data without index
+        return(self.list_row)
+    
+    def select_random_categories(self, dbname, table, id_category):
+
+        self.list_row = []
+        self.mydb = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                passwd="karen250",
+                database=dbname
+                )
+        self.mycursor = self.mydb.cursor()
+        self.sql_select = "SELECT barcode, food FROM %s where id_category = %s order by barcode LIMIT 10" % (table, id_category)
+        self.mycursor.execute(self.sql_select)
+        self.result = self.mycursor.fetchall()
+        for row in self.result :
+            self.list_row.append(row) #  display data without index
         return(self.list_row)
 
 class menu():
