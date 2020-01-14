@@ -122,13 +122,10 @@ class database():
         for columns in list_categories:
             self.sql_insert = """INSERT INTO categories(category_name) values (%s);"""
             self.value = (columns)
-            # self.mycursor.execute(self.sql_insert, (self.value,))
-        # self.mydb.commit()
+            self.mycursor.execute(self.sql_insert, (self.value,))
+        self.mydb.commit()
         
         self.clean_list_product = self.clean_sql(list_product)
-        # print('---')
-        # print(self.clean_list_product)
-        # for sql in self.clean_list_product:
         self.sql_insert ="""INSERT INTO products (
             barcode,
             id_category,
@@ -138,9 +135,7 @@ class database():
             description_food,
             nutriscore) values (%s, %s, %s, %s, %s, %s, %s) 
             ON DUPLICATE KEY UPDATE barcode = VALUES (barcode);"""
-        # self.value = (sql)
-        # print(self.value)
-        # print(self.clean_list_product)
+
         self.mycursor.executemany(self.sql_insert, self.clean_list_product)
         self.mydb.commit()
 
@@ -162,7 +157,8 @@ class database():
 
         return(self.list_final_product)
 
-    def insert(self, dbname, table):
+    def insert(self, dbname, barcode_product_selected, 
+        barcode_product_substitute):
         print('insert')
         self.mydb = mysql.connector.connect(
                 host="localhost",
@@ -171,8 +167,12 @@ class database():
                 database=dbname
                 )
         
+        self.sql_insert ="INSERT INTO products_selected values (%s, %s); " % (
+            barcode_product_selected,
+            barcode_product_substitute
+            )
         self.mycursor = self.mydb.cursor()
-        self.mycursor.execute(sql_request + ';')
+        self.mycursor.execute(self.sql_insert)
         self.mydb.commit()
 
     def select(self, dbname, table):
@@ -186,8 +186,8 @@ class database():
         self.mycursor = self.mydb.cursor()
         self.sql_select = "SELECT * FROM %s" % table
         self.mycursor.execute(self.sql_select)
-        # self.mycursor.execute("SELECT * FROM %s", (self.value, ))
         self.result = self.mycursor.fetchall()
+        print(self.result)
         for row in self.result :
             self.list_row.append(row[1]) #  display data without index
         return(self.list_row)
@@ -202,12 +202,27 @@ class database():
                 database=dbname
                 )
         self.mycursor = self.mydb.cursor()
-        self.sql_select = "SELECT barcode, food FROM %s where id_category = %s order by barcode LIMIT 10" % (table, id_category)
+        self.sql_select = "SELECT food, barcode FROM %s where id_category = %s order by rand() LIMIT 10" % (table, id_category)
         self.mycursor.execute(self.sql_select)
         self.result = self.mycursor.fetchall()
-        for row in self.result :
-            self.list_row.append(row) #  display data without index
-        return(self.list_row)
+        return(self.result)
+
+    def select_better(self, dbname, id_category):
+        self.list_row = []
+        self.mydb = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                passwd="karen250",
+                database=dbname
+                )
+        self.mycursor = self.mydb.cursor()
+        self.sql_select = "SELECT food, barcode, nutriscore, store, url_food FROM products where id_category = %s and nutriscore = 'a' order by rand() limit 1;" % (id_category)
+        self.mycursor.execute(self.sql_select)
+        self.result = self.mycursor.fetchall()
+        print(self.result)
+        # self.list_result = self.result.split(sep=None, maxsplit=-1)
+        # print(self.list_result[0])
+        return(self.result[0][1])
 
 class menu():
 
