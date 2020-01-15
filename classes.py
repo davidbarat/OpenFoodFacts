@@ -220,22 +220,49 @@ class database():
         self.mycursor.execute(self.sql_select)
         self.result = self.mycursor.fetchall()
         print(self.result)
-        # self.list_result = self.result.split(sep=None, maxsplit=-1)
-        # print(self.list_result[0])
         return(self.result[0][1])
+
+    def select_products_selected(self, dbname, table):
+        self.list_row = []
+        self.mydb = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                passwd="karen250",
+                database=dbname
+                )
+        self.mycursor = self.mydb.cursor()
+        self.sql_select = "SELECT * FROM %s" % table
+        self.mycursor.execute(self.sql_select)
+        self.result = self.mycursor.fetchall()
+        for i in self.result :
+            self.list_product_substitute = list(i)
+            self.products = self.list_product_substitute[0]
+            self.substitute = self.list_product_substitute[1]
+            print('\n')
+            print('Vous avez selectionne le produit suivant : ')
+            self.sql_select = "SELECT food, nutriscore FROM products where barcode = %s;" % (str(self.products))
+            self.mycursor.execute(self.sql_select)
+            self.result = self.mycursor.fetchall()
+            print(self.result[0][0])
+            print('Son indice nustriscore est de : ' + self.result[0][1])
+            print('Nous vous avons conseillé le produit suivant : ')
+            self.sql_select = "SELECT food, nutriscore, store FROM products where barcode = %s;" % (str(self.substitute))
+            self.mycursor.execute(self.sql_select)
+            self.result = self.mycursor.fetchall()
+            print(self.result[0][0])
+            print('Son indice nustriscore est de : ' + self.result[0][1])
+            print('Vous pouvez vous le procurer dans le(s) magasin(s) suivants : ' + self.result[0][2])
+        return(self.list_row)
 
 class menu():
 
     def create_menu(self, list_menu):
-        # print('create_menu')
-        self.idx = 1
-        for item in list_menu:
-            print('{}'.format(self.idx) + ') ' + '{}'.format(item))
-            self.idx += 1
-    
+        for idx, item in enumerate(list_menu, 1):
+            print('{}'.format(idx) + ') ' + '{}'.format(item))
+
     def check_answer(self, answer):
         regex = re.compile(r"[0-9]")
         if regex.match(answer):
             return True
-        print('Vous devez taper un chiffre pour désigner une catégorie')
+        print('Vous devez taper un chiffre :')
         return False
