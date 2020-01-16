@@ -81,12 +81,12 @@ class database():
             self.mycursor.execute("CREATE DATABASE" + dbname)
             return True
 
-        except mysql.connector.Error as err:
-            print('Database is already created')
+        except mysql.connector.Error:
+            # print('Database is already created')
             return False
 
     def create_database(self, dbname):
-        print('create_database')
+        # print('create_database')
         self.mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
@@ -102,7 +102,7 @@ class database():
 
         with open("resources/database.sql", 'r') as self.sqlcommands:
             self.sql = self.sqlcommands.read().split(';')
-            for idx, sql_request in enumerate(self.sql):
+            for sql_request in self.sql:
                 print(sql_request + ';')
                 # self.message = format(idx, sql_request)
                 # print(self.message)
@@ -110,7 +110,7 @@ class database():
         self.mydb.commit()
 
     def populate_database(self, dbname, list_product, list_categories):
-        print('populate')
+        # print('populate')
         self.mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
@@ -159,7 +159,7 @@ class database():
 
     def insert(self, dbname, barcode_product_selected, 
         barcode_product_substitute):
-        print('insert')
+        # print('insert')
         self.mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
@@ -187,7 +187,7 @@ class database():
         self.sql_select = "SELECT * FROM %s" % table
         self.mycursor.execute(self.sql_select)
         self.result = self.mycursor.fetchall()
-        print(self.result)
+        # print(self.result)
         for row in self.result :
             self.list_row.append(row[1]) #  display data without index
         return(self.list_row)
@@ -205,7 +205,11 @@ class database():
         self.sql_select = "SELECT food, barcode FROM %s where id_category = %s order by rand() LIMIT 10" % (table, id_category)
         self.mycursor.execute(self.sql_select)
         self.result = self.mycursor.fetchall()
-        return(self.result)
+        for row in self.result :
+            self.list_row.append(row) #  display data without index
+        return(self.list_row)
+        # print(self.result)
+        # return(self.result)
 
     def select_better(self, dbname, id_category):
         self.list_row = []
@@ -219,7 +223,15 @@ class database():
         self.sql_select = "SELECT food, barcode, nutriscore, store, url_food FROM products where id_category = %s and nutriscore = 'a' order by rand() limit 1;" % (id_category)
         self.mycursor.execute(self.sql_select)
         self.result = self.mycursor.fetchall()
-        print(self.result)
+        # print(self.result)
+        self.list_product_substitute = list(self.result)
+        self.products = self.list_product_substitute[0][0]
+        self.substitute = self.list_product_substitute[0][1]
+        # print('\n')
+        print(self.result[0][0])
+        print('Son indice nustriscore est de : ' + self.result[0][2])
+        print('Vous pouvez vous le procurer dans le(s) magasin(s) suivants : ' 
+            + self.result[0][3])
         return(self.result[0][1])
 
     def select_products_selected(self, dbname, table):

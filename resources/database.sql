@@ -1,40 +1,46 @@
-
-CREATE TABLE categories
+CREATE TABLE `categories`
 (
-    id_category INT
-    AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    category_name VARCHAR
-    (40) NOT NULL
+  `id_category` int
+(11) NOT NULL AUTO_INCREMENT,
+  `category_name` varchar
+(40) NOT NULL,
+  PRIMARY KEY
+(`id_category`);
+
+CREATE TABLE `products`
+(
+  `barcode` varchar
+(20) NOT NULL,
+  `id_category` int
+(11) NOT NULL,
+  `food` varchar
+(70) NOT NULL,
+  `url_food` varchar
+(300) NOT NULL,
+  `store` varchar
+(120) NOT NULL,
+  `description_food` varchar
+(850) NOT NULL,
+  `nutriscore` varchar
+(2) NOT NULL,
+  PRIMARY KEY
+(`barcode`),
+  KEY `categories_products_fk`
+(`id_category`),
+  CONSTRAINT `categories_products_fk` FOREIGN KEY
+(`id_category`) REFERENCES `categories`
+(`id_category`)
 );
 
-    CREATE TABLE products
-    (
-        barcode VARCHAR(20) NOT NULL PRIMARY KEY,
-        id_category INT NOT NULL,
-        food VARCHAR(40) NOT NULL,
-        url_food VARCHAR(300) NOT NULL,
-        store VARCHAR(100) NOT NULL,
-        description_food VARCHAR(600) NOT NULL,
-        nutriscore VARCHAR (2) NOT NULL
-    );
-
-
-    CREATE TABLE products_selected
-    (
-        barcode VARCHAR(20) NOT NULL PRIMARY KEY,
-        products_selected VARCHAR(50) NOT NULL,
-        substitute VARCHAR(50) NOT NULL
-    );
-
-
-    ALTER TABLE products ADD CONSTRAINT categories_products_fk
-FOREIGN KEY (id_category)
-REFERENCES categories (id_category)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION;
-
-    ALTER TABLE products_selected ADD CONSTRAINT products_products_selected_fk
-FOREIGN KEY (barcode)
-REFERENCES products (barcode)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION;
+CREATE TABLE `products_selected`
+(
+  `barcode` varchar
+(20) NOT NULL,
+  `substitute_barcode` varchar
+(20) DEFAULT NULL,
+  PRIMARY KEY
+(`barcode`),
+  CONSTRAINT `products_products_selected_fk` FOREIGN KEY
+(`barcode`) REFERENCES `products`
+(`barcode`)
+);
