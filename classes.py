@@ -40,7 +40,10 @@ class api():
                 self.r = requests.get(
                     url = self.url,
                     params = self.payload,
-                    headers = {'UserAgent': 'Project OpenFood - MacOS - Version 10.13.6'}
+                    headers = {
+                        'UserAgent':
+                        'Project OpenFood - MacOS - Version 10.13.6'
+                        }
                 )
                 self.data = self.r.json()
                 # print(self.data)
@@ -61,9 +64,9 @@ class api():
                     self.data['products'][j]['ingredients_text_fr'],
                     self.data['products'][j]['nutriscore_grade']
                     )
-                # self.counter += 1
+
                 )
-                # print(self.list_product)
+
         return(self.list_product)
 
 class database():
@@ -86,7 +89,6 @@ class database():
             return False
 
     def create_database(self, dbname):
-        # print('create_database')
         self.mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
@@ -104,13 +106,10 @@ class database():
             self.sql = self.sqlcommands.read().split(';')
             for sql_request in self.sql:
                 print(sql_request + ';')
-                # self.message = format(idx, sql_request)
-                # print(self.message)
                 self.mycursor.execute(sql_request + ';')
         self.mydb.commit()
 
     def populate_database(self, dbname, list_product, list_categories):
-        # print('populate')
         self.mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
@@ -140,7 +139,6 @@ class database():
         self.mydb.commit()
 
     def clean_sql(self, list_product):
-        print('clean_sql')
         self.clean_desc = []
         self.clean_store = []
         self.clean_product = []
@@ -152,14 +150,20 @@ class database():
             self.clean_desc = i[5].replace('"',"'")
             self.clean_desc = i[5].replace('%',' ')
             self.clean_desc = i[5].replace("\'"," ")
-            i = [i[0], i[1], self.clean_product, i[3], self.clean_store, self.clean_desc, i[6]]
+            i = [
+                i[0],
+                i[1],
+                self.clean_product,
+                i[3], 
+                self.clean_store,
+                self.clean_desc,
+                i[6]]
             self.list_final_product.append(i)
 
         return(self.list_final_product)
 
     def insert(self, dbname, barcode_product_selected, 
         barcode_product_substitute):
-        # print('insert')
         self.mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
@@ -167,10 +171,7 @@ class database():
                 database=dbname
                 )
         
-        self.sql_insert ="INSERT INTO products_selected values (%s, %s); " % (
-            barcode_product_selected,
-            barcode_product_substitute
-            )
+        self.sql_insert ="INSERT INTO products_selected values (%s, %s); " % (barcode_product_selected, barcode_product_substitute)
         self.mycursor = self.mydb.cursor()
         self.mycursor.execute(self.sql_insert)
         self.mydb.commit()
@@ -187,7 +188,6 @@ class database():
         self.sql_select = "SELECT * FROM %s" % table
         self.mycursor.execute(self.sql_select)
         self.result = self.mycursor.fetchall()
-        # print(self.result)
         for row in self.result :
             self.list_row.append(row[1]) #  display data without index
         return(self.list_row)
@@ -202,14 +202,13 @@ class database():
                 database=dbname
                 )
         self.mycursor = self.mydb.cursor()
-        self.sql_select = "SELECT food, barcode FROM %s where id_category = %s order by rand() LIMIT 10" % (table, id_category)
+        self.sql_select = "SELECT food, barcode FROM %s where id_category = %s order by rand() LIMIT 10" % (
+            table, id_category)
         self.mycursor.execute(self.sql_select)
         self.result = self.mycursor.fetchall()
         for row in self.result :
             self.list_row.append(row) #  display data without index
         return(self.list_row)
-        # print(self.result)
-        # return(self.result)
 
     def select_better(self, dbname, id_category):
         self.list_row = []
@@ -220,17 +219,16 @@ class database():
                 database=dbname
                 )
         self.mycursor = self.mydb.cursor()
-        self.sql_select = "SELECT food, barcode, nutriscore, store, url_food FROM products where id_category = %s and nutriscore = 'a' order by rand() limit 1;" % (id_category)
+        self.sql_select = "SELECT food, barcode, nutriscore, store, url_food FROM products where id_category = %s and nutriscore = 'a' order by rand() limit 1;" % (
+            id_category)
         self.mycursor.execute(self.sql_select)
         self.result = self.mycursor.fetchall()
-        # print(self.result)
         self.list_product_substitute = list(self.result)
         self.products = self.list_product_substitute[0][0]
         self.substitute = self.list_product_substitute[0][1]
-        # print('\n')
         print(self.result[0][0])
         print('Son indice nustriscore est de : ' + self.result[0][2])
-        print('Vous pouvez vous le procurer dans le(s) magasin(s) suivants : ' 
+        print('Vous pouvez vous le procurer dans le(s) magasin(s) suivants : '
             + self.result[0][3])
         return(self.result[0][1])
 
@@ -243,7 +241,7 @@ class database():
                 database=dbname
                 )
         self.mycursor = self.mydb.cursor()
-        self.sql_select = "SELECT * FROM %s" % table
+        self.sql_select = "SELECT * FROM %s where nutriscore != 'a' " % table
         self.mycursor.execute(self.sql_select)
         self.result = self.mycursor.fetchall()
         for i in self.result :
@@ -252,18 +250,22 @@ class database():
             self.substitute = self.list_product_substitute[1]
             print('\n')
             print('Vous avez selectionne le produit suivant : ')
-            self.sql_select = "SELECT food, nutriscore FROM products where barcode = %s;" % (str(self.products))
+            self.sql_select = "SELECT food, nutriscore FROM products where barcode = %s;" % (
+                str(self.products))
             self.mycursor.execute(self.sql_select)
             self.result = self.mycursor.fetchall()
             print(self.result[0][0])
             print('Son indice nustriscore est de : ' + self.result[0][1])
             print('Nous vous avons conseillé le produit suivant : ')
-            self.sql_select = "SELECT food, nutriscore, store FROM products where barcode = %s;" % (str(self.substitute))
+            self.sql_select = "SELECT food, nutriscore, store FROM products where barcode = %s;" % (
+                str(self.substitute))
             self.mycursor.execute(self.sql_select)
             self.result = self.mycursor.fetchall()
             print(self.result[0][0])
             print('Son indice nustriscore est de : ' + self.result[0][1])
-            print('Vous pouvez vous le procurer dans le(s) magasin(s) suivants : ' + self.result[0][2])
+            print(
+                'Vous pouvez vous le procurer dans le(s) magasin(s) suivants :'
+                + self.result[0][2])
         return(self.list_row)
 
 class menu():
