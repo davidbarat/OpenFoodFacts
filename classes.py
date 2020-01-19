@@ -81,11 +81,12 @@ class database():
     def init_database(self, dbname):
         self.mycursor = self.mydb.cursor()
         try:
-            self.mycursor.execute("CREATE DATABASE" + dbname)
+            # print('create database')
+            self.mycursor.execute("CREATE DATABASE %s " %(dbname))
             return True
 
         except mysql.connector.Error:
-            # print('Database is already created')
+            print('Database is already created')
             return False
 
     def create_database(self, dbname):
@@ -106,10 +107,12 @@ class database():
             self.sql = self.sqlcommands.read().split(';')
             for sql_request in self.sql:
                 print(sql_request + ';')
-                self.mycursor.execute(sql_request + ';')
+                # self.mycursor.execute(sql_request + ';')
+                self.mycursor.execute(sql_request)
+
         self.mydb.commit()
 
-    def populate_database(self, dbname, list_product, list_categories):
+    def populate_database(self, dbname, list_product, category):
         self.mydb = mysql.connector.connect(
                 host="localhost",
                 user="root",
@@ -118,12 +121,17 @@ class database():
                 )
 
         self.mycursor = self.mydb.cursor()
-        for columns in list_categories:
-            self.sql_insert = """INSERT INTO categories(category_name) values (%s);"""
-            self.value = (columns)
-            self.mycursor.execute(self.sql_insert, (self.value,))
+        # for columns in list_categories:
+        self.sql_insert = """INSERT INTO categories (category_name) VALUES (%s);"""
+        # self.value = (columns)
+        print(
+            'Les donnees pour la categorie '
+            + category + ' sont en cours d insertion'
+            )
+        # self.list_category = [category]
+        # print(self.list_category)
+        self.mycursor.execute(self.sql_insert, (category,))
         self.mydb.commit()
-        
         self.clean_list_product = self.clean_sql(list_product)
         self.sql_insert ="""INSERT INTO products (
             barcode,
@@ -241,7 +249,7 @@ class database():
                 database=dbname
                 )
         self.mycursor = self.mydb.cursor()
-        self.sql_select = "SELECT * FROM %s where nutriscore != 'a' " % table
+        self.sql_select = "SELECT * FROM %s " %(table)
         self.mycursor.execute(self.sql_select)
         self.result = self.mycursor.fetchall()
         for i in self.result :
@@ -254,6 +262,7 @@ class database():
                 str(self.products))
             self.mycursor.execute(self.sql_select)
             self.result = self.mycursor.fetchall()
+            # print(self.result)
             print(self.result[0][0])
             print('Son indice nustriscore est de : ' + self.result[0][1])
             print('Nous vous avons conseillé le produit suivant : ')
@@ -261,6 +270,7 @@ class database():
                 str(self.substitute))
             self.mycursor.execute(self.sql_select)
             self.result = self.mycursor.fetchall()
+            
             print(self.result[0][0])
             print('Son indice nustriscore est de : ' + self.result[0][1])
             print(
