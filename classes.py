@@ -126,7 +126,8 @@ class database():
 
         self.mycursor = self.mydb.cursor()
         # for columns in list_categories:
-        self.sql_insert = """INSERT INTO categories (category_name) VALUES (%s);"""
+        self.sql_insert = """INSERT INTO
+        categories (category_name) VALUES (%s);"""
         # self.value = (columns)
         print(
             'Les donnees pour la categorie '
