@@ -15,7 +15,6 @@ db_exists = my_database.init_database(dbname)
 if db_exists:
     my_database.create_database(dbname)
     for idx, category in enumerate(list_categories, 1):
-        # print(i)
         list_product = my_api.get_info_from_api(category, idx)
         my_database.populate_database(dbname, list_product, category)
 

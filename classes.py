@@ -26,6 +26,10 @@ class api():
             "action": "process",
             "json": 1
         }
+        print(
+                'Récuperation des données à partir de l api pour la catégorie:'
+                + ' ' + categories
+                )
         self.list_product = []
         # self.counter = 1
         for c in range(1,6,1): # 5 pages
@@ -97,16 +101,16 @@ class database():
                 database=dbname
                 )
         self.mycursor = self.mydb.cursor()
-        self.mycursor.execute("SHOW DATABASES")
-        self.result = self.mycursor.fetchall()
+        # self.mycursor.execute("SHOW DATABASES")
+        # self.result = self.mycursor.fetchall()
 
-        for i in range(len(self.result)):
-	        print(self.result[i])
+        # for i in range(len(self.result)):
+	        # print(self.result[i])
 
         with open("resources/database.sql", 'r') as self.sqlcommands:
             self.sql = self.sqlcommands.read().split(';')
             for sql_request in self.sql:
-                print(sql_request + ';')
+                # print(sql_request + ';')
                 # self.mycursor.execute(sql_request + ';')
                 self.mycursor.execute(sql_request)
 
@@ -265,6 +269,7 @@ class database():
             # print(self.result)
             print(self.result[0][0])
             print('Son indice nustriscore est de : ' + self.result[0][1])
+            print('\n')
             print('Nous vous avons conseillé le produit suivant : ')
             self.sql_select = "SELECT food, nutriscore, store FROM products where barcode = %s;" % (
                 str(self.substitute))
