@@ -64,6 +64,7 @@ ou non.
 
 ##  Instructions
 Vous avez la possibilité de modifier les catégories (main.py):
+
 	list_categories = [
             'Snacks',
             'Boissons',
@@ -72,6 +73,7 @@ Vous avez la possibilité de modifier les catégories (main.py):
             'Fromages']
 
 Et de spécifier le nom de la base que vous désirez :
+
 	dbname = 'openfoodfacts2'
 
 
