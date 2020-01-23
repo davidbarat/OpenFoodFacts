@@ -63,6 +63,7 @@ or not.
 
 ##  Instructions
 You can modify the categories (main.py):
+
 	list_categories = [
             'Snacks',
             'Boissons',
@@ -82,8 +83,9 @@ Fork the project on your local machine and launch the script via these commands:
     python main.py
 
 
-** list of json tags used *** code
+** list of json tags used *** 
 
+* code
 * url
 * product_name
 * ingredient_text
