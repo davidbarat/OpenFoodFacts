@@ -1,22 +1,22 @@
 OpenFoodFacts
 -----------------
 
-Le but de ce projet est de récupérer une liste de produits alimentaires, les insérer dans une base de données.
-Puis via un menu interactif de substituer un produit malsain d'une catégorie par un produit sain (nutriscore à A).
-Une fois le substitut proposé, vous avez la possibilité d'enregistrer votre choix afin de consulter les différents
-produits substitués ultérieurement.
+The purpose of this project is to retrieve a list of a food products and then insert them into a mysql database.
+Then via an interactive menu to replace an unhealthy product of a category by a healthy product (nutriscore grade A).
+Once the substitute has been proposed, you can save your choice in order to consult the different
+products subsequently replaced.
 
-## Etapes principales du script
-1. Le programme va créer l'enveloppe de la base et 'jouer' le .sql fourni dans le répertoire resources,
-2. Puis il va interroger l'api OFF et créer une liste de produits pour chaque catégories,
-3. Ensuite les produits et les catégories vont être insérés en base de données,
-4. Le menu utilisateur se basera sur les catégories rentrés en base de données et proposera d'en 
-sélectionner une, puis affichera dix produits malsains,
-5. Le programme proposera un produit de la même catégorie mais avec un nutriscore de A,
-6. Puis l'utilisateur aura le choix d'enregistrer son choix ou non et de lister ces différentes recherches
-ou non.
+## Main steps of the script
+1. The program will create the database structure and 'play' the .sql provided in the resources directory,
+2. Then it will query the API OFF and create a list of products for each given category,
+3. Then products and categories will be inserted into the database,
+4. The user menu will be based on the categories entered in the database and will suggest
+select one, and then display ten unhealthy products,
+5. The program will offer a product of the same category but with a nutriscore of A,
+6. In addition the user will have the choice to save his searchs or not, and to list his previous searches
+or not.
 
-## structure database openfoodfacts
+## database structure
 * table products (barcode, id_category, food, url_food, store, description_food, nutriscore)
 * table products_selected (barcode, substitute_barcode)
 * table categories (id_categorie, category_name)
@@ -25,46 +25,44 @@ ou non.
 
 ## class database
 * def init:
-	* creation de l'enveloppe de la bdd
+	* creation of the bdd envelope
 * def create:
-	* creation de la structure de la bdd, execution .sql à jouer
+	* structure creation of the database, execution database.sql
 * def populate_database:
-    * insert des données dans les tables categories et products
-	* récupération list_sql (list_product) et passage de l'instruction insert
+	* insert data in the categories and products tables
+	* get list_sql (list_product) and pass the insert instruction
 * def select:
-	* select simple avec nom table en paramètre
+	* select with table name as parameter
 * def select_products_selected:
-	* affiche les détails du produit selectionné
+	* display details of a selected product
 * def select_better:
-	* affiche le meilleur produit (nutriscore a) de la catégorie selectionnée
+	* display the best product (nutriscore grade a) of the selected category
 * def clean_sql:
-	* permet de nettoyer la requête pour l'insert dans la table products
+	* clean up the sql query for the insert in the products table
 * def select_random_categories
-	* permet de retourner les 10 produits de la catégorie sélectionnée
-
+	* return the top 10 products of a selected category
+	
 ## class api
-* def recup_info
-	* payload pour appel API
+* def recup_info:
+	* payload for API call
 
 ## class menu
-* check_answer
-	* check si la réponse est bien un chiffre
-* create_menu
-	* création d'un menu avec en paramètre une liste
+* def check_answer:
+	* check if the answer is a number
+* create_menu:
+	* creation of a menu with a list as parameter
 
-## menu utilisateur
-1. choisir une catégorie
-	1. choisir un produit parmi quelques produits malsains dans cette catégorie
-	2. choisir un substitut parmi le ou les substituts proposés
-2. choisir d'enregistrer ou pas le substitut en favoris
-3. lister les choix enregistrés
+## User menu
+1. choose a category
+2. choose a product from a list of unhealthy products in this category
+3. choose whether or not to save the substitute 
+4. list the saved choices
 
-## Pre requis
+## Prerequisite
 * Mysql 8.0.18 + password root
 
 ##  Instructions
-Vous avez la possibilité de modifier les catégories (main.py):
-
+You can modify the categories (main.py):
 	list_categories = [
             'Snacks',
             'Boissons',
@@ -72,10 +70,9 @@ Vous avez la possibilité de modifier les catégories (main.py):
             'Produits à tartiner',
             'Fromages']
 
-Et de spécifier le nom de la base que vous désirez :
+And specify the database name :
 
 	dbname = 'openfoodfacts2'
-
 
 ## Installing
 
@@ -85,8 +82,8 @@ Fork the project on your local machine and launch the script via these commands:
     python main.py
 
 
-**liste des tags json utilisés**
-* code
+** list of json tags used *** code
+
 * url
 * product_name
 * ingredient_text
